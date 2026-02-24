@@ -1,4 +1,4 @@
-/* StockFlow Pro v7.0.0 - Apple Store Inspired */
+/* StockFlow Pro v7.0.1 - Apple Store Inspired com imagem de fundo */
 :root {
     --bg: #F5F5F7;
     --card: #FFFFFF;
@@ -70,6 +70,22 @@ body {
     padding: 0 16px 80px;
     min-height: 100vh;
     transition: background-color 0.3s, color 0.3s;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('fundo-pizza.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* Header */
@@ -79,6 +95,8 @@ body {
     align-items: center;
     padding: 16px 0;
     margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
@@ -121,6 +139,8 @@ h1 {
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
 }
 
 .nav-tab {
@@ -168,6 +188,8 @@ h1 {
     padding: 20px;
     box-shadow: var(--shadow);
     margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
 }
 
 label {
@@ -276,6 +298,22 @@ button:active {
     border-radius: var(--radius-sm);
     margin-bottom: 16px;
     width: 100%;
+}
+
+/* Ações no final da página */
+.actions-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.actions-section button {
+    width: 100%;
+    max-width: 400px;
 }
 
 /* Lupa */
@@ -394,6 +432,7 @@ button:active {
     background: var(--card);
     margin-bottom: 20px;
     box-shadow: var(--shadow);
+    z-index: 1;
 }
 
 table {
@@ -560,6 +599,8 @@ tr:last-child td {
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     margin-top: 20px;
+    position: relative;
+    z-index: 1;
 }
 
 #titulo-compras {
