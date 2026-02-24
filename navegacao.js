@@ -1,3 +1,4 @@
+// navegacao.js
 import { darFeedback } from './utils.js';
 
 export function iniciarNavegacao() {
@@ -12,7 +13,9 @@ export function iniciarNavegacao() {
             tab.classList.add('active');
             contents.forEach(content => content.classList.remove('active'));
             const section = document.getElementById(target + '-section');
-            if (section) section.classList.add('active');
+            if (section) {
+                section.classList.add('active');
+            }
             darFeedback();
         });
     });
