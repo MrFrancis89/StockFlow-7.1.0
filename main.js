@@ -1,3 +1,4 @@
+// main.js
 import { produtosPadrao } from './produtos.js';
 import { identificarCategoria } from './categorias.js';
 import { 
@@ -20,28 +21,21 @@ import { iniciarNavegacao } from './navegacao.js';
 import { alternarCheck, alternarTodos } from './eventos.js';
 import { atualizarDropdown } from './dropdown.js';
 
-const VERSAO_ATUAL = "v7.0.0";
+const VERSAO_ATUAL = "v6.2.2";
 
 const releaseNotes = {
-    "v7.0.0": `✨ **StockFlow Pro v7.0.0**
-
-- Redesign completo inspirado na Apple Store: nova paleta de cores sóbria, cards arredondados, botões elegantes e tipografia refinada.
-- Modo escuro adaptado para manter a consistência visual.
-- Melhorias gerais na experiência do usuário.`,
-    "v6.2.3": `✨ **StockFlow Pro v6.2.3**
-
-- Correção: erro de sintaxe no módulo da calculadora.
-- Melhoria: itens com quantidade igual ou superior ao mínimo definido agora são automaticamente desmarcados da lista de compras.`,
     "v6.2.2": `✨ **StockFlow Pro v6.2.2**
 
 - Correção crítica: lista pré-definida de produtos agora é carregada corretamente.
-- Adicionada verificação de segurança para garantir que os produtos padrão sejam importados.`,
+- Adicionada verificação de segurança para garantir que os produtos padrão sejam importados.
+- Pequenos ajustes para evitar falhas silenciosas na renderização.`,
     "v6.2.1": `✨ **StockFlow Pro v6.2.1**
 
 - Correção de bugs: 
   - Função \`atualizarDropdown\` agora está disponível globalmente.
   - Toast de alerta agora funciona corretamente.
-  - Eliminada dependência circular entre módulos.`,
+  - Eliminada dependência circular entre módulos.
+- Melhorias na estabilidade do código.`,
     "v6.2.0": `✨ **StockFlow Pro v6.2.0**
 
 - Nova aba "Adicionar" para separar o formulário de inclusão de produtos.
@@ -55,7 +49,8 @@ const releaseNotes = {
 
 - Alternância entre calculadora e teclado nativo nos campos de quantidade.
 - Ícone de retorno à calculadora (🧮) dentro do campo quando em modo teclado.
-- Parser avançado de frações: agora você pode digitar "1/2", "2 1/3" e será convertido para decimal automaticamente.`,
+- Parser avançado de frações: agora você pode digitar "1/2", "2 1/3" e será convertido para decimal automaticamente.
+- Melhorias na experiência de entrada de dados.`,
     "v6.0.0": `✨ **StockFlow Pro v6.0.0**
 
 - Navegação por abas: Estoque e Compras.
@@ -96,21 +91,20 @@ function mostrarNovidades(texto) {
 
 function atualizarTituloPrincipal() {
     const titulo = document.getElementById('titulo-principal');
-    titulo.innerHTML = `StockFlow Pro <span style="color: var(--accent); font-size: 12px; margin-left: 5px;">${VERSAO_ATUAL}</span>`;
+    titulo.innerHTML = `StockFlow Pro <span style="color: var(--btn-danger); font-size: 12px; margin-left: 5px;">${VERSAO_ATUAL}</span>`;
 }
 
 function atualizarTitulos() {
-    const tituloCompras = document.getElementById('titulo-compras');
-    if (tituloCompras) tituloCompras.innerText = "LISTA " + obterDataAmanha();
+    document.getElementById("titulo-compras").innerText = "LISTA " + obterDataAmanha();
 }
 
 function carregarListaPadrao() {
-    let listaCombinada = [];
-    let ocultosSistema = carregarOcultos();
+    var listaCombinada = [];
+    var ocultosSistema = carregarOcultos();
     
     if (Array.isArray(produtosPadrao)) {
         produtosPadrao.forEach(p => {
-            let d = p.split("|");
+            var d = p.split("|");
             if (!ocultosSistema.includes(d[0].toLowerCase())) {
                 listaCombinada.push({ n: d[0], q: "", u: d[1], c: false, min: null, max: null });
             }
@@ -119,12 +113,12 @@ function carregarListaPadrao() {
         console.error("Erro: produtosPadrao não foi carregado corretamente.");
         const fallback = ["Arroz|kg", "Feijão|kg", "Açúcar|kg", "Sal|kg", "Óleo|uni"];
         fallback.forEach(p => {
-            let d = p.split("|");
+            var d = p.split("|");
             listaCombinada.push({ n: d[0], q: "", u: d[1], c: false, min: null, max: null });
         });
     }
 
-    let favoritosUsuario = carregarMeus();
+    var favoritosUsuario = carregarMeus();
     favoritosUsuario.forEach(item => {
         if (!listaCombinada.some(i => i.n.toLowerCase() === item.n.toLowerCase())) {
             listaCombinada.push({ n: item.n, q: "", u: item.u, c: false, min: null, max: null });
@@ -135,10 +129,10 @@ function carregarListaPadrao() {
 }
 
 function filtrarGeral() {
-    let tBusca = document.getElementById('filtroBusca').value.toLowerCase();
-    let tSelect = document.getElementById('filtroSelect').value.toLowerCase();
+    var tBusca = document.getElementById('filtroBusca').value.toLowerCase();
+    var tSelect = document.getElementById('filtroSelect').value.toLowerCase();
     document.querySelectorAll("#lista-itens-container tr:not(.categoria-header-row)").forEach(r => {
-        let nome = r.querySelector(".nome-prod").innerText.toLowerCase();
+        var nome = r.querySelector(".nome-prod").innerText.toLowerCase();
         if (nome.includes(tBusca) && (tSelect === "" || nome === tSelect)) {
             r.style.display = "";
         } else {
@@ -161,14 +155,14 @@ function filtrarGeral() {
 }
 
 function adicionarManual(salvarNoPadrao) {
-    let p = document.getElementById("novoProduto").value.trim();
-    let q = document.getElementById("novoQtd").value.trim();
-    let u = document.getElementById("novoUnidade").value;
+    var p = document.getElementById("novoProduto").value.trim();
+    var q = document.getElementById("novoQtd").value.trim();
+    var u = document.getElementById("novoUnidade").value;
 
     if (!p) { mostrarToast("⚠️ Digite o nome do produto!"); return; }
     darFeedback();
 
-    let dados = carregarDados() || [];
+    var dados = carregarDados() || [];
 
     if (dados.some(item => item.n.toLowerCase() === p.toLowerCase())) {
         mostrarToast("⚠️ O item já existe na lista!");
@@ -181,7 +175,7 @@ function adicionarManual(salvarNoPadrao) {
     atualizarPainelCompras();
 
     if (salvarNoPadrao) {
-        let favoritosUsuario = carregarMeus();
+        var favoritosUsuario = carregarMeus();
         if (!favoritosUsuario.some(item => item.n.toLowerCase() === p.toLowerCase())) {
             favoritosUsuario.push({ n: p, u: u });
             salvarMeus(favoritosUsuario);
@@ -193,19 +187,19 @@ function adicionarManual(salvarNoPadrao) {
 }
 
 function removerDoPadrao() {
-    let p = document.getElementById("novoProduto").value.trim();
+    var p = document.getElementById("novoProduto").value.trim();
     if (!p) { mostrarToast("⚠️ Digite o nome para remover!"); return; }
     darFeedback();
-    let favoritosUsuario = carregarMeus();
-    let novaListaFavoritos = favoritosUsuario.filter(item => item.n.toLowerCase() !== p.toLowerCase());
+    var favoritosUsuario = carregarMeus();
+    var novaListaFavoritos = favoritosUsuario.filter(item => item.n.toLowerCase() !== p.toLowerCase());
     salvarMeus(novaListaFavoritos);
-    let ocultosSistema = carregarOcultos();
+    var ocultosSistema = carregarOcultos();
     if (!ocultosSistema.includes(p.toLowerCase())) {
         ocultosSistema.push(p.toLowerCase());
         salvarOcultos(ocultosSistema);
     }
     document.querySelectorAll("#lista-itens-container tr:not(.categoria-header-row)").forEach(r => {
-        let nomeTabela = r.querySelector(".nome-prod").innerText.toLowerCase();
+        var nomeTabela = r.querySelector(".nome-prod").innerText.toLowerCase();
         if (nomeTabela === p.toLowerCase()) {
             r.remove();
         }
@@ -220,8 +214,8 @@ function removerDoPadrao() {
 
 function alternarLista() {
     darFeedback();
-    let tabelaWrapper = document.querySelector(".table-wrapper");
-    let btnToggle = document.getElementById("btn-toggle-lista");
+    var tabelaWrapper = document.querySelector(".table-wrapper");
+    var btnToggle = document.getElementById("btn-toggle-lista");
     if (tabelaWrapper.style.display === "none") {
         tabelaWrapper.style.display = "block";
         btnToggle.innerHTML = "🔽 Ocultar Lista de Estoque";
@@ -247,7 +241,7 @@ function resetarTudo() {
 
 function iniciarNovoDia() {
     mostrarConfirmacao("ZERAR QUANTIDADES?", () => {
-        let dados = carregarDados() || [];
+        var dados = carregarDados() || [];
         dados.forEach(item => {
             item.q = "";
             item.c = false;
@@ -258,29 +252,29 @@ function iniciarNovoDia() {
 }
 
 function salvarListaNoCelular() {
-    let dados = localStorage.getItem(STORAGE_KEYS.dados);
+    var dados = localStorage.getItem(STORAGE_KEYS.dados);
     if (!dados || dados === "[]") return;
     darFeedback();
-    let blob = new Blob([dados], { type: "application/json" });
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement("a");
+    var blob = new Blob([dados], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
     a.href = url;
 
-    let data = new Date();
-    let dia = String(data.getDate()).padStart(2, '0');
-    let mes = String(data.getMonth() + 1).padStart(2, '0');
-    let ano = data.getFullYear();
-    let horas = String(data.getHours()).padStart(2, '0');
-    let minutos = String(data.getMinutes()).padStart(2, '0');
-    let nomeArquivo = `ESTOQUE_${dia}-${mes}-${ano}_${horas}h${minutos}.json`;
+    var data = new Date();
+    var dia = String(data.getDate()).padStart(2, '0');
+    var mes = String(data.getMonth() + 1).padStart(2, '0');
+    var ano = data.getFullYear();
+    var horas = String(data.getHours()).padStart(2, '0');
+    var minutos = String(data.getMinutes()).padStart(2, '0');
+    var nomeArquivo = `ESTOQUE_${dia}-${mes}-${ano}_${horas}h${minutos}.json`;
 
     a.download = nomeArquivo;
     a.click();
 }
 
 function carregarListaDoCelular(event) {
-    let f = event.target.files[0];
-    let r = new FileReader();
+    var f = event.target.files[0];
+    var r = new FileReader();
     r.onload = function(e) {
         let dados = JSON.parse(e.target.result);
         dados = dados.map(item => ({
@@ -295,8 +289,8 @@ function carregarListaDoCelular(event) {
 }
 
 function autoPreencherUnidade() {
-    let inputNome = document.getElementById("novoProduto").value.toLowerCase().trim();
-    let match = Array.isArray(produtosPadrao) ? produtosPadrao.find(p => p.split("|")[0].toLowerCase().startsWith(inputNome)) : null;
+    var inputNome = document.getElementById("novoProduto").value.toLowerCase().trim();
+    var match = Array.isArray(produtosPadrao) ? produtosPadrao.find(p => p.split("|")[0].toLowerCase().startsWith(inputNome)) : null;
     if (match) {
         document.getElementById("novoUnidade").value = match.split("|")[1];
     }
@@ -702,7 +696,7 @@ function iniciarApp() {
     atualizarTitulos();
     initLupa();
 
-    let salvos = carregarDados();
+    var salvos = carregarDados();
     if (salvos && salvos.length > 0) {
         renderizarListaCompleta(salvos);
     } else {
