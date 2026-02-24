@@ -1,3 +1,4 @@
+// compras.js
 import { coletarDadosDaTabela } from './tabela.js';
 import { obterDataAmanha } from './utils.js';
 
